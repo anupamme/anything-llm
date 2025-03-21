@@ -45,7 +45,11 @@ class PostgresSQLConnector {
     return `SELECT * FROM pg_catalog.pg_tables WHERE schemaname = 'public'`;
   }
   getTableSchemaSql(table_name) {
-    return ` select column_name, data_type, character_maximum_length, column_default, is_nullable from INFORMATION_SCHEMA.COLUMNS where table_name = '${table_name}'`;
+    // Use parameterized query to prevent SQL injection
+    return {
+      text: 'select column_name, data_type, character_maximum_length, column_default, is_nullable from INFORMATION_SCHEMA.COLUMNS where table_name = $1',
+      values: [table_name]
+    };
   }
 }
 
